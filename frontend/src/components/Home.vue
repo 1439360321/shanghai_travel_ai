@@ -1,7 +1,7 @@
 
 <template>
   <div class="Home">
-    <h1>DeepSeek RAG 问答系统</h1>
+    <h1>上海旅行助手</h1>
 
     <!-- 提问表单 -->
     <AskForm @submitQuestion="addQuestion" />
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import AskForm from './/AskForm.vue'
+import AskForm from './AskForm.vue'
 import HistoryList from './HistoryList.vue'
 import ClearHistory from './ClearHistory.vue'
 import VoiceInput from './VoiceInput.vue'

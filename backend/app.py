@@ -12,11 +12,9 @@ from typing import List
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from dotenv import load_dotenv
 from passlib.context import CryptContext
-from mysql.connector.cursor import MySQLCursorDict
 
-# ------------------------------
-# 1️⃣ 环境 & 配置
-# ------------------------------
+#  环境 & 配置
+
 load_dotenv()
 
 # **JWT 配置**
@@ -55,15 +53,15 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 或者使用前端的域名来限制来源
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ------------------------------
-# 2️⃣ 数据库操作函数
-# ------------------------------
+
+# 数据库操作函数
+
 def get_db_connection():
     try:
         conn = mysql.connector.connect(**DB_CONFIG)
@@ -100,9 +98,9 @@ def get_user_by_username(username: str):
     conn.close()
     return user
 
-# ------------------------------
-# 3️⃣ JWT 生成 & 验证
-# ------------------------------
+
+# JWT 生成 & 验证
+
 def create_access_token(data: dict):
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     data.update({"exp": expire.timestamp()})
@@ -120,9 +118,9 @@ def get_current_user(token: str = Depends(verify_token)):
         raise HTTPException(status_code=401, detail="Invalid authentication token")
     return token
 
-# ------------------------------
-# 4️⃣ 用户身份验证 API
-# ------------------------------
+
+# 用户身份验证 API
+
 class UserRegister(BaseModel):
     username: str
     email: str
@@ -132,7 +130,7 @@ class UserRegister(BaseModel):
 def register_user(user: UserRegister):
     hashed_password = pwd_context.hash(user.password)
     if not create_user(user.username, user.email, hashed_password):
-        raise HTTPException(status_code=400, detail="注册失败，请检查数据库")
+        raise HTTPException(status_code=400, detail="注册失败")
     return {"message": "注册成功"}
 
 class UserLogin(BaseModel):
@@ -152,9 +150,9 @@ def login(user: UserLogin):
 def get_profile(current_user: dict = Depends(get_current_user)):
     return {"username": current_user["sub"]}
 
-# ------------------------------
-# 5️⃣ DeepSeek 生成 & 在线搜索
-# ------------------------------
+
+#  DeepSeek 生成 在线搜索
+
 class Query(BaseModel):
     question: str
 
@@ -206,9 +204,9 @@ async def ask_question(query: Query, request: Request):
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"{str(e)}")
 
-# ------------------------------
-# 6️⃣ FastAPI 启动
-# ------------------------------
+
+# FastAPI 启动
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8010, reload=True)
