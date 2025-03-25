@@ -1,0 +1,9 @@
+torch
+requests
+transformers
+fastapi
+pydantic
+typing
+traceback
+numpy
+mysql-connector-python
