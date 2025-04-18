@@ -1,230 +1,123 @@
 <template>
   <div id="app">
-    <!-- 头部导航栏 -->
-    <nav>
-      <div class="logo">
-        <a href="/">上海旅行助手</a>
+    <!-- 背景视频 -->
+    <div class="background-video-container">
+      <video autoplay muted loop class="background-video">
+        <!-- 这里的路径根据你的视频文件实际存放位置来设置 -->
+        <source src="./assets/background-video.mp4" type="video/mp4">
+        <source src="./assets/background-video.webm" type="video/webm">
+        您的浏览器不支持视频标签。
+      </video>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="main-nav">
+      <div class="logo-container">
+        <img src="../src/assets/logo.jpg" alt="上海Logo" class="logo-img">
       </div>
       <div class="nav-links">
-        <a href="/">首页</a>
-        <a href="/recommendations">旅行推荐</a>
-        <a href="/profile">个人资料</a>
-        <a href="/activities">活动</a>
-        <a href="/messages">消息</a>
-        <a v-if="!isLoggedIn" href="/login">登录</a>
-        <a v-if="isLoggedIn" href="/logout" @click="logout">退出</a>
-      </div>
-      <div class="search">
-        <input v-model="searchQuery" type="text" placeholder="搜索目的地..." />
-        <button @click="search">搜索</button>
+        <router-link to="/">首 页</router-link>
+        <span v-if="!isLoggedIn"> | </span>
+        <router-link to="/recommendations">推 荐</router-link>
       </div>
     </nav>
 
-    <!-- 主页内容显示区域 -->
-    <router-view></router-view>
+    <!-- 主内容区 -->
+    <div class="main-content">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      isLoggedIn: false,  // 用户是否登录
-      searchQuery: ''  // 搜索关键词
-    };
-  },
-  methods: {
-    logout() {
-      this.isLoggedIn = false;
-      // 处理登出逻辑，例如清除令牌，重定向到首页等
-    },
-    search() {
-      if (this.searchQuery) {
-        // 处理搜索逻辑，可以跳转到搜索结果页面
-        this.$router.push({ path: '/search', query: { q: this.searchQuery } });
-      }
-    }
-  },
-  created() {
-    // 检查用户是否登录，例如通过 Vuex 或 cookie 判断
-    // 假设你在 Vuex 中存储登录状态
-    // this.isLoggedIn = this.$store.state.isLoggedIn;
-  }
+  name: 'App'
 };
 </script>
 
-<style scoped>
-/* 全局样式 */
+<style>
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Microsoft YaHei', sans-serif;
 }
 
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f4f4f4;
-  color: #333;
+  /* background-color: #f4f4f4; */
 }
 
-/* 头部导航栏样式 */
-nav {
+/* 背景视频容器 */
+.background-video-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin-top: 80px; 
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* 确保视频在背景 */
+}
+
+.background-video {
+  object-fit: cover; /* 使视频填充整个容器 */
+  width: 100%;
+  height: 100%;
+}
+
+.content {
+  position: relative;
+  z-index: 1; /* 确保内容在视频前面 */
+  text-align: center;
+  padding: 50px;
+  color: white;
+}
+
+/* 导航条样式 */
+.main-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #4CAF50;
-  padding: 15px 30px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem 5%;
+  background: url('../src/assets/main-nav-background.png') center/cover no-repeat;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-nav .logo a {
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-  text-decoration: none;
+.logo-container img {
+  height: 50px;
 }
 
-nav .nav-links {
+.nav-links {
   display: flex;
   align-items: center;
+  gap: 1rem;
 }
 
-nav .nav-links a {
-  color: white;
-  margin: 0 15px;
+.nav-links a {
+  color: black;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 2.5rem;
   transition: color 0.3s ease;
 }
 
-nav .nav-links a:hover {
-  color: #ddd;
+.nav-links a:hover {
+  color: #ffd700;
 }
 
-nav .search input {
-  padding: 8px 12px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: none;
-  margin-right: 10px;
+/* 主内容样式 */
+.main-content {
+  margin-top: 100px; /* 为固定导航留出空间 */
+  padding: 20px;
 }
 
-nav .search button {
-  padding: 8px 16px;
-  font-size: 16px;
-  background-color: white;
-  color: #4CAF50;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-nav .search button:hover {
-  background-color: #45a049;
-}
-
-/* 响应式设计：在小屏幕设备上调整布局 */
+/* 响应式设计 */
 @media (max-width: 768px) {
-  nav {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px;
-  }
-
-  nav .logo a {
-    font-size: 20px;
-  }
-
-  nav .nav-links {
-    flex-direction: column;
+  .nav-links {
     width: 100%;
-    margin-top: 10px;
+    justify-content: center;
   }
-
-  nav .nav-links a {
-    margin: 10px 0;
-    font-size: 16px;
-  }
-
-  nav .search {
-    margin-top: 10px;
-    width: 100%;
-  }
-
-  nav .search input {
-    width: calc(100% - 100px);
-  }
-
-  nav .search button {
-    width: 80px;
-  }
-}
-
-/* 页面内容样式 */
-#app {
-  margin-top: 20px;
-  padding: 0 20px;
-}
-
-h2 {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-h3 {
-  font-size: 20px;
-  color: #555;
-}
-
-button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 10px;
-}
-
-button:hover {
-  background-color: #45a049;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-form div {
-  margin-bottom: 15px;
-}
-
-form label {
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-
-form input {
-  padding: 8px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-form button {
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-form button:hover {
-  background-color: #45a049;
 }
 </style>

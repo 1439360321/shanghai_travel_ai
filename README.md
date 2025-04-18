@@ -1,6 +1,6 @@
-# DeepSeek RAG 项目
+# 上海旅游助手 项目
 
-## 项目简介
+## 项目简介上海旅游助手
 本项目整合了微调后的 DeepSeek 模型与 RAG（检索增强生成）技术，部署成 API 并用 Vue3 前端展示问答界面。
 
 ## 目录结构
@@ -11,7 +11,6 @@ project/ ├── backend/ # 后端代码（FastAPI 部署 DeepSeek RAG API） 
 
    ```bash
    cd backend
-   pip install -r requirements.txt
    uvicorn app:app --host 0.0.0.0 --port 8000 --reload
    ```
 
